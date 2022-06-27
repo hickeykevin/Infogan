@@ -18,8 +18,8 @@ class LitInfoGAN(pl.LightningModule):
         super().__init__()
         self.save_hyperparameters()
         self.config = config
-        self.generator = Generator(opt=self.config)
-        self.discriminator = Discriminator(opt=self.config)
+        self.generator = Generator(opt=self.config).apply(self.weights_init_normal)
+        self.discriminator = Discriminator(opt=self.config).apply(self.weights_init_normal)
         self.automatic_optimization = False
 
     # ----------------------
@@ -66,14 +66,9 @@ class LitInfoGAN(pl.LightningModule):
         # Get varied c1 and c2
         zeros = np.zeros((10 ** 2, 1))
         c_varied = np.repeat(np.linspace(-1, 1, self.config.n_classes)[:, np.newaxis], self.config.n_classes, 0)
-        c1 = torch.as_tensor(np.concatenate((c_varied, zeros), -1), device=self.device, dtype=torch.float)
-        c2 = torch.as_tensor(np.concatenate((zeros, c_varied), -1), device=self.device, dtype=torch.float)
+        c1 = torch.from_numpy(np.concatenate((c_varied, zeros), -1), device=self.device, dtype=torch.float)
+        c2 = torch.from_numpy(np.concatenate((zeros, c_varied), -1), device=self.device, dtype=torch.float)
         return c1, c2
-
-    def on_fit_start(self):
-        # Initialize generator and discriminator weights
-        self.generator = self.weights_init_normal(self.generator)
-        self.discriminator = self.weights_init_normal(self.discriminator)
 
     # ----------------------
     # Training Logic

@@ -18,7 +18,7 @@ class Config:
   n_classes: int=10
   img_size: int=32
   channels: int=1
-  sample_interval: wandint=400
+  sample_interval: int=400
   lambda_cat: int=1
   lambda_con: float = 0.1
 

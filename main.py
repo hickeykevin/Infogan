@@ -6,7 +6,7 @@ from infogan import LitInfoGAN
 from models import Generator, Discriminator
 
 
-dataset = MNISTDataModule(data_dir=str(DATA_FOLDER))
+dataset = MNISTDataModule(data_dir=str(DATA_FOLDER), config=Config)
 model = LitInfoGAN(config=Config)
 LOGGER.watch(model.generator)
 LOGGER.watch(model.discriminator)
@@ -15,7 +15,7 @@ trainer = pl.Trainer(
     max_epochs=20, 
     gpus=1, 
     logger=LOGGER,
-    callbacks=[LogGeneratedImagesCallback()], 
+    callbacks=[LogGeneratedImagesCallback(Config)], 
     #fast_dev_run=True
     )
 

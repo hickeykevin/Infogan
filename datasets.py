@@ -14,12 +14,17 @@ from torch.utils.data import random_split, DataLoader
 from torchvision.datasets import MNIST
 from torchvision import transforms
 
-
 class MNISTDataModule(pl.LightningDataModule):
-    def __init__(self, data_dir: str = "./"):
+    def __init__(self, config, data_dir: str = "./"):
         super().__init__()
         self.data_dir = data_dir
-        self.transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+        self.transform = transforms.Compose(
+          [
+            transforms.Resize(config.img_size), 
+            transforms.ToTensor(),
+            transforms.Normalize([0.5], [0.5])
+            ]
+          )
 
     def prepare_data(self):
         # download
